@@ -335,7 +335,7 @@ app.post("/addstudents", (req, res) => {
 
             conn.query(query, [indexno, username, firstname, lastname, email, programme, year, hashedPassword], (error, result) => {
                 if (error) {
-                    console.log('Error executing query')
+                    console.log('Error executing query', error)
                     return res.status(500).json({ message: 'Error executing query' });
                 }
                 if (result.affectedRows === 0) {
