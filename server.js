@@ -225,6 +225,7 @@ app.get("/student/:email", (req, res) => {
             return res.status(204).send(errorMessage);
         }
         console.log('Data fetched successfully:', result[0]);
+        return res.send(result[0]);        
     })
 })
 
