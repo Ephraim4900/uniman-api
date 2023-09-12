@@ -174,9 +174,10 @@ app.get("/courses", (req, res) => {
 })
 
 // get one student
-app.get("/students/:email", (req, res) => {
+app.get("/students/:email/:password", (req, res) => {
     const query = 'SELECT * FROM students WHERE email = ?'
     const email = req.params.email
+    const password = req.params.password
 
     conn.query(query, [email], (error, result) => {
         if (error) {
@@ -194,7 +195,14 @@ app.get("/students/:email", (req, res) => {
             return res.status(204).send(errorMessage);
         }
         console.log('Data fetched successfully:', result[0]);
-        return res.send(result[0]);
+        const decrypt = bcrypt.compareSync(password, result[0].password)
+        if (decrypt) {
+            console.log('correct info')
+            return res.send(result[0]);
+        } else {
+            console.log('incorrect password')
+            return res.json({ message: 'incorrect password' })
+        }
     })
 })
 
