@@ -199,9 +199,10 @@ app.get("/students/:email", (req, res) => {
 })
 
 // get one lecturer
-app.get("/lecturer/:email", (req, res) => {
+app.get("/lecturer/:email/:password", (req, res) => {
     const query = 'SELECT * FROM lecturers WHERE email = ?'
     const email = req.params.email
+    const password = req.params.password
 
     conn.query(query, [email], (error, result) => {
         if (error) {
@@ -213,7 +214,14 @@ app.get("/lecturer/:email", (req, res) => {
             return res.status(204).json({ message: 'Student does not exist' });
         }
         console.log('Data fetched successfully:', result[0]);
-        return res.send(result[0]);
+        const decrypt = bcrypt.compareSync(password, result[0].password)
+        if(decrypt){
+            console.log('correct info')            
+            return res.send(result[0]);
+        } else {
+            console.log('incorrect password')
+            return res.json({message: 'incorrect password'})
+        }
     })
 })
 
