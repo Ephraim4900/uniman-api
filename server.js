@@ -318,7 +318,7 @@ app.get("/confirmLCode/:email", (req, res) => {
 // create student
 app.post("/addstudents", (req, res) => {
     const { indexno, username, firstname, lastname, email, programme, year, password } = req.body
-    const query = "INSERT INTO students (indexno, username, firstname, lastname, email, programme, year, password, code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '')"
+    const query = "INSERT INTO students (indexno, username, firstname, lastname, email, phonenumber, programme, year, password, code) VALUES (?, ?, ?, ?, ?, '', ?, ?, ?, '')"
     const saltRounds = 13
 
     bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
@@ -335,7 +335,7 @@ app.post("/addstudents", (req, res) => {
 
             conn.query(query, [indexno, username, firstname, lastname, email, programme, year, hashedPassword], (error, result) => {
                 if (error) {
-                    console.log('Error executing query', error)
+                    console.log('Error executing query')
                     return res.status(500).json({ message: 'Error executing query' });
                 }
                 if (result.affectedRows === 0) {
