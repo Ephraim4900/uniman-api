@@ -232,7 +232,7 @@ app.get("/student/:email", (req, res) => {
 })
 
 // lecturer login
-app.get("/lecturer/:email/:password", (req, res) => {
+app.get("/lecturers/:email/:password", (req, res) => {
     const query = 'SELECT * FROM lecturers WHERE email = ?'
     const email = req.params.email
     const password = req.params.password
