@@ -189,10 +189,7 @@ app.get("/studentlogin/:email/:password", (req, res) => {
         }
         if (result.length === 0) {
             console.log('Query returned no data. The data you are querying does not exist.')
-            const errorMessage = {
-                message: 'Student does not exist'
-            }
-            return res.status(204).send(errorMessage);
+            return res.status(204).json({message: 'Student does not exist'});
         }
         console.log('Data fetched successfully:', result[0]);
         const decrypt = bcrypt.compareSync(password, result[0].password)
