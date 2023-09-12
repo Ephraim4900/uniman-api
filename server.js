@@ -173,7 +173,7 @@ app.get("/courses", (req, res) => {
     })
 })
 
-// get one student
+// student login
 app.get("/students/:email/:password", (req, res) => {
     const query = 'SELECT * FROM students WHERE email = ?'
     const email = req.params.email
@@ -206,7 +206,32 @@ app.get("/students/:email/:password", (req, res) => {
     })
 })
 
-// get one lecturer
+// get one student 
+app.get("/student/:email", (req, res) => {
+    const query = 'SELECT * FROM students WHERE email = ?'
+    const email = req.params.email
+    const password = req.params.password
+
+    conn.query(query, [email], (error, result) => {
+        if (error) {
+            console.log('Error executing query')
+            const errorMessage = {
+                message: 'Error executing query'
+            }
+            return res.status(500).send(errorMessage);
+        }
+        if (result.length === 0) {
+            console.log('Query returned no data. The data you are querying does not exist.')
+            const errorMessage = {
+                message: 'Student does not exist'
+            }
+            return res.status(204).send(errorMessage);
+        }
+        console.log('Data fetched successfully:', result[0]);
+    })
+})
+
+// lecturer login
 app.get("/lecturer/:email/:password", (req, res) => {
     const query = 'SELECT * FROM lecturers WHERE email = ?'
     const email = req.params.email
@@ -230,6 +255,25 @@ app.get("/lecturer/:email/:password", (req, res) => {
             console.log('incorrect password')
             return res.json({message: 'incorrect password'})
         }
+    })
+})
+
+// get one lecturer 
+app.get("/lecturer/:email", (req, res) => {
+    const query = 'SELECT * FROM lecturers WHERE email = ?'
+    const email = req.params.email
+
+    conn.query(query, [email], (error, result) => {
+        if (error) {
+            console.log('Error executing query')
+            return res.status(500).json({ message: 'Error executing query' });
+        }
+        if (result.length === 0) {
+            console.log('Query returned no data. The data you are querying does not exist.')
+            return res.status(204).json({ message: 'Student does not exist' });
+        }
+        console.log('Data fetched successfully:', result[0]);
+        return res.send(result[0]);
     })
 })
 
