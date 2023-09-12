@@ -174,7 +174,7 @@ app.get("/courses", (req, res) => {
 })
 
 // student login
-app.get("/students/:email/:password", (req, res) => {
+app.get("/studentlogin/:email/:password", (req, res) => {
     const query = 'SELECT * FROM students WHERE email = ?'
     const email = req.params.email
     const password = req.params.password
