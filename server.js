@@ -626,23 +626,22 @@ app.post("/sendCode", (req, res) => {
         html: messageBody
     }
 
-    transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-            console.log('Error sending mail:', err)
-            return res.status(500).json({ message: 'Error sending email' });
+    conn.query('UPDATE students SET code = ? WHERE email = ?', [generatedCode, email], (error, result) => {
+        if (error) {
+            console.log('Error executing query', error)
+            return res.status(500).json({ message: 'Error executing query' });
         }
-        console.log('Email sent:', info.response)
-        // return res.status(200).send(info);
-        conn.query('UPDATE students SET code = ? WHERE email = ?', [generatedCode, email], (error, result) => {
-            if (error) {
-                console.log('Error executing query', error)
-                return res.status(500).json({ message: 'Error executing query' });
+        if (result.affectedRows === 0) {
+            console.log('Code not adedd')
+            return res.status(204).json({ message: 'Code not added' });
+        }
+        console.log('Code added successfully:', result[0]);
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.log('Error sending mail:', err)
+                return res.status(500).json({ message: 'Error sending email' });
             }
-            if (result.affectedRows === 0) {
-                console.log('Code not adedd')
-                return res.status(204).json({ message: 'Code not added' });
-            }
-            console.log('Code added successfully:', result[0]);
+            console.log('Email sent:', info.response)
             return res.send(result[0]);
         })
     })
@@ -679,24 +678,23 @@ app.post("/sendLCode", (req, res) => {
         subject: 'Reset Code',
         html: messageBody
     }
-
-    transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-            console.log('Error sending mail:', err)
-            return res.status(500).send({ message: 'Error sending email' });
+    
+    conn.query('UPDATE lecturers SET code = ? WHERE email = ?', [generatedCode, email], (error, result) => {
+        if (error) {
+            console.log('Error executing query', error)
+            return res.status(500).json({ message: 'Error executing query' });
         }
-        console.log('Email sent:', info.response)
-        // return res.status(200).send(info);
-        conn.query('UPDATE lecturers SET code = ? WHERE email = ?', [generatedCode, email], (error, result) => {
-            if (error) {
-                console.log('Error executing query', error)
-                return res.status(500).json({ message: 'Error executing query' });
+        if (result.affectedRows === 0) {
+            console.log('Code not adedd')
+            return res.status(204).json({ message: 'Code not added' });
+        }
+        console.log('Code added successfully:', result[0]);
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.log('Error sending mail:', err)
+                return res.status(500).send({ message: 'Error sending email' });
             }
-            if (result.affectedRows === 0) {
-                console.log('Code not adedd')
-                return res.status(204).json({ message: 'Code not added' });
-            }
-            console.log('Code added successfully:', result[0]);
+            console.log('Email sent:', info.response)
             return res.send(result[0]);
         })
     })
