@@ -633,7 +633,7 @@ app.post("/sendCode", (req, res) => {
         }
         console.log('Email sent:', info.response)
         // return res.status(200).send(info);
-        conn.query('UPDATE STUDENTS SET code = ? WHERE email = ?', [generatedCode, email], (error, result) => {
+        conn.query('UPDATE students SET code = ? WHERE email = ?', [generatedCode, email], (error, result) => {
             if (error) {
                 console.log('Error executing query', error)
                 return res.status(500).json({ message: 'Error executing query' });
