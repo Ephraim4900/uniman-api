@@ -704,19 +704,41 @@ app.post("/sendLCode", (req, res) => {
 // save result
 app.post("/results", (req, res) => {
     const { name, indexno, semester, course, score, grade } = req.body
+    const getExistingResult = 'SELECT * FROM results WHERE indexno = ?, semester = ?, course = ?'
     const query = 'INSERT INTO results(name, indexno, semester, course, score, grade) VALUES (?, ?, ?, ?, ?, ?)'
+    const updateExistingResult = 'UPDATE results SET score = ?, grade = ? WHERE indexno = ? AND semester = ? AND course = ?'
 
-    conn.query(query, [name, indexno, semester, course, score, grade], (error, result) => {
-        if (error) {
-            console.log('Error executing query', error)
+    conn.query(getExistingResult, [indexno, semester, course], (err, info) => {
+        if (err) {
+            console.log('Error executing query', err)
             return res.status(500).json({ message: 'Error executing query' })
         }
-        if (result.affectedRows === 0) {
-            console.log('Results were not uploaded')
-            return res.status(409).json({ message: 'Results were not uploaded' })
+        if (info.length === 0) {
+            conn.query(query, [name, indexno, semester, course, score, grade], (error, result) => {
+                if (error) {
+                    console.log('Error executing query', error)
+                    return res.status(500).json({ message: 'Error executing query' })
+                }
+                if (result.affectedRows === 0) {
+                    console.log('Results were not uploaded')
+                    return res.status(409).json({ message: 'Results were not uploaded' })
+                }
+                console.log('Results uploaded successfully', result)
+                return res.status(201).send(result)
+            })
         }
-        console.log('Results uploaded successfully', result)
-        return res.status(201).send(result)
+        conn.query(updateExistingResult, [score, grade, indexno, semester, course], (fail, pass) => {
+            if (fail) {
+                console.log('Error executing query', fail)
+                return res.status(500).json({ message: 'Error executing query' })
+            }
+            if (pass.affectedRows === 0) {
+                console.log('Results were not uploaded')
+                return res.status(409).json({ message: 'Results were not uploaded' })
+            }
+            console.log('Results uploaded successfully', pass)
+            return res.status(201).send(pass)
+        })
     })
 })
 
