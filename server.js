@@ -704,7 +704,7 @@ app.post("/sendLCode", (req, res) => {
 // save result
 app.post("/results", (req, res) => {
     const { name, indexno, semester, course, score, grade } = req.body
-    const getExistingResult = 'SELECT * FROM results WHERE indexno = ?, semester = ?, course = ?'
+    const getExistingResult = 'SELECT * FROM results WHERE indexno = ? AND semester = ? AND course = ?'
     const query = 'INSERT INTO results(name, indexno, semester, course, score, grade) VALUES (?, ?, ?, ?, ?, ?)'
     const updateExistingResult = 'UPDATE results SET score = ?, grade = ? WHERE indexno = ? AND semester = ? AND course = ?'
 
